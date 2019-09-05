@@ -1470,6 +1470,7 @@ static const MVMREPROps VMArray_this_repr = {
     gc_free_repr_data,
     compose,
     spesh,
+    NULL, /* jit */
     "VMArray", /* name */
     MVM_REPR_ID_VMArray,
     unmanaged_size,
