@@ -12902,30 +12902,36 @@ MVM_PUBLIC const MVMuint8 MVM_op_is_allowed_in_confprog(unsigned short op) {
 }
 
 MVM_PUBLIC const char *MVM_op_get_mark(unsigned short op) {
-    if (op > 823) {
-        return ".s";
-    } else if (op == 23) {
-        return ".j";
-    } else if (op == 34) {
-        return ":j";
-    } else if (op >= 51 && op < 56) {
-        return ".r";
-    } else if (op == 127) {
-        return "+a";
-    } else if (op >= 128 && op < 135) {
-        return "*a";
-    } else if (op >= 135 && op < 140) {
-        return "-a";
-    } else if (op >= 141 && op < 149) {
-        return ".p";
-    } else if (op == 157) {
-        return ".p";
-    } else if (op >= 778 && op < 783) {
-        return "-a";
-    } else if (op == 796) {
-        return "-a";
-    } else if (op >= MVM_OP_EXT_BASE) {
-        return ".x";
+    if (op >= 135) {
+        if (op < 140) {
+            return "-a";
+        } else if (op >= 141 && op < 149) {
+            return ".p";
+        } else if (op == 157) {
+            return ".p";
+        } else if (op >= 778 && op < 783) {
+            return "-a";
+        } else if (op == 796) {
+            return "-a";
+        } else if (op > 823) {
+            if (op >= MVM_OP_EXT_BASE) {
+                return ".x";
+            }
+            return ".s";
+        }
+    }
+    else {
+        if (op == 23) {
+            return ".j";
+        } else if (op == 34) {
+            return ":j";
+        } else if (op >= 51 && op < 56) {
+            return ".r";
+        } else if (op == 127) {
+            return "+a";
+        } else if (op >= 128 && op < 135) {
+            return "*a";
+        }
     }
     return "  ";
 }
