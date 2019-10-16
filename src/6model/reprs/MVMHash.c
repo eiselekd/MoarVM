@@ -73,7 +73,7 @@ static void gc_free(MVMThreadContext *tc, MVMObject *obj) {
         MVM_fixed_size_free(tc, tc->instance->fsa, sizeof(MVMHashEntry), tmp);
 }
 
-static void at_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *data, MVMObject *key_obj, MVMRegister *result, MVMuint16 kind) {
+void MVMHash_at_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *data, MVMObject *key_obj, MVMRegister *result, MVMuint16 kind) {
     MVMHashBody   *body = (MVMHashBody *)data;
     MVMHashEntry *entry = NULL;
     /* key_obj checked in MVM_HASH_GET */
@@ -84,11 +84,8 @@ static void at_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *d
         MVM_exception_throw_adhoc(tc,
             "MVMHash representation does not support native type storage");
 }
-void MVMHash_at_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *data, MVMObject *key_obj, MVMRegister *result, MVMuint16 kind) {
-    at_key(tc, st, root, data, key_obj, result, kind);
-}
 
-static void bind_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *data, MVMObject *key_obj, MVMRegister value, MVMuint16 kind) {
+void MVMHash_bind_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *data, MVMObject *key_obj, MVMRegister value, MVMuint16 kind) {
     MVMHashBody   *body = (MVMHashBody *)data;
     MVMHashEntry *entry = NULL;
 
@@ -109,9 +106,6 @@ static void bind_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void 
     else {
         MVM_ASSIGN_REF(tc, &(root->header), entry->value, value.o);
     }
-}
-void MVMHash_bind_key(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *data, MVMObject *key_obj, MVMRegister value, MVMuint16 kind) {
-    bind_key(tc, st, root, data, key_obj, value, kind);
 }
 static MVMuint64 elems(MVMThreadContext *tc, MVMSTable *st, MVMObject *root, void *data) {
     MVMHashBody *body = (MVMHashBody *)data;
@@ -257,8 +251,8 @@ static const MVMREPROps MVMHash_this_repr = {
     MVM_REPR_DEFAULT_BOX_FUNCS,
     MVM_REPR_DEFAULT_POS_FUNCS,
     {
-        at_key,
-        bind_key,
+        MVMHash_at_key,
+        MVMHash_bind_key,
         exists_key,
         delete_key,
         get_value_storage_spec
